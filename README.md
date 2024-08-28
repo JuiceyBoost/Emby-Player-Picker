@@ -37,6 +37,9 @@ To set up this external player option in Emby:
 
 Enjoy your media with the flexibility of choosing your preferred media player!
 
+## Download
+Latest releases are found [here](https://github.com/JuiceyBoost/Emby-Player-Picker/releases)
+
 ## Todo
 - Add config file with things such as
   - customisable settings to media players, such as launching full screen
