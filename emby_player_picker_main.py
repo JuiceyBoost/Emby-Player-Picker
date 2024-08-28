@@ -43,6 +43,23 @@ def detect_media_players():
     if os.path.exists(potplayer_path):
         players.append(('PotPlayer', potplayer_path))
 
+    # Check for LAV Filter Megamix MPC and PotPlayer
+    lav_mpc_x64_path = "C:\\Program Files (x86)\\LAV Filters\\x64\\mpc-hc\\shoukaku.exe"
+    if os.path.exists(lav_mpc_x64_path):
+        players.append(('LAV Megamix MPC-HC (x64)', lav_mpc_x64_path))
+
+    lav_mpc_x32_path = "C:\\Program Files (x86)\\LAV Filters\\x32\\mpc-hc\\shoukaku.exe"
+    if os.path.exists(lav_mpc_x32_path):
+        players.append(('LAV Megamix MPC-HC (x32)', lav_mpc_x32_path))
+
+    lav_potplayer_x64_path = "C:\\Program Files (x86)\\LAV Filters\\x64\\PotPlayer\\zuikaku.exe"
+    if os.path.exists(lav_potplayer_x64_path):
+        players.append(('LAV Megamix PotPlayer (x64)', lav_potplayer_x64_path))
+
+    lav_potplayer_x32_path = "C:\\Program Files (x86)\\LAV Filters\\x32\\PotPlayer\\zuikaku.exe"
+    if os.path.exists(lav_potplayer_x32_path):
+        players.append(('LAV Megamix PotPlayer (x32)', lav_potplayer_x32_path))
+
     # Check for ACG Player
     acgplayer_path = "C:\\Program Files\\WindowsApps\\ACGPlayer\\ACGPlayer.exe"
     if os.path.exists(acgplayer_path):
@@ -116,8 +133,11 @@ def main():
         print("Error: First and second arguments are required.")
         sys.exit(1)
 
-    arg1 = sys.argv[1]
-    arg2 = sys.argv[2]
+    media_url = sys.argv[1] # HLS Stream URL from Emby/Jellyfin
+    seconds = sys.argv[2] # Resume time measured in Seconds
+    
+    # Convert Seconds into milliseconds for relevant players
+    milliseconds = int(seconds) * 1000
 
     # Detect available media players
     players = detect_media_players()
@@ -141,24 +161,34 @@ def main():
 
         player_name, player_path = players[choice_idx]
 
-        print(f"\nOpening {player_name} with arguments: {arg1}")
+        print(f"\nOpening {player_name}")
+        
 
         # Build command and arguments based on the chosen player
         if 'MPV' in player_name:
-            subprocess.Popen([player_path, f"--start={arg2}", arg1])
+            print(f"\nOpening: {player_path} --start={seconds} {media_url}")
+            subprocess.Popen([player_path, f"--start={seconds}", media_url])
+            
         elif player_name == 'VLC':
-            subprocess.Popen([player_path, arg1, f"--start-time={arg2}"])
-        elif 'MPC' in player_name:
-            milliseconds = int(arg2 * 1000)
-            subprocess.Popen([player_path, arg1, f"/start {milliseconds}"])
-        elif player_name == 'PotPlayer':
-            subprocess.Popen([player_path, arg1, f"/seek={arg2}"])
+            print(f"\nOpening: {player_path} {media_url} --start-time={seconds}")
+            subprocess.Popen([player_path, media_url, f"--start-time={seconds}"])
+            
+        elif 'PotPlayer' in player_name:
+            print(f"\nOpening: {player_path} {media_url} /seek {seconds}")
+            subprocess.Popen([player_path, media_url, f"/seek={seconds}"])
+            
         elif player_name == 'SMPlayer':
-            subprocess.Popen([player_path, f"--start={arg2}", arg1])
-        elif player_name == 'Zoom Player':
-            subprocess.Popen([player_path, arg1, f"/seek:{arg2}"])
+            print(f"\nOpening: {player_path} --start={seconds} {media_url}")
+            subprocess.Popen([player_path, f"--start={seconds}", media_url])
+            
+        #Disabled MPC custom arguments for now as adding arguments beyond media_url causes "unknown switches" error in MPC
+        #elif 'MPC' in player_name:
+        #    print(f"\nOpening: {player_path} {media_url} /start {milliseconds}")
+        #    subprocess.Popen([player_path, f'"{media_url}"', f"/start {seconds}"])
+        
         else:
-            subprocess.Popen([player_path, arg1])
+            print(f"\nOpening: {player_path} {media_url}")
+            subprocess.Popen([player_path, media_url])
 
     except ValueError:
         print("\nInvalid choice. Please select a valid option.")

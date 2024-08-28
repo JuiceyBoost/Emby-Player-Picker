@@ -10,8 +10,8 @@ if len(sys.argv) != 3:
     sys.exit(1)
 
 # Retrieve the arguments
-arg1 = sys.argv[1]
-arg2 = sys.argv[2]
+arg1 = sys.argv[1] # HLS Stream URL from Emby/Jellyfin
+arg2 = sys.argv[2] # Resume time measured in Seconds
 
 # Print the arguments for debugging purposes
 print(f"Arguments received:\narg1: {arg1}\narg2: {arg2}")
