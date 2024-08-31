@@ -45,6 +45,6 @@ Latest releases are found [here](https://github.com/JuiceyBoost/Emby-Player-Pick
   - customisable settings to media players, such as launching full screen
   - The ability to set SyncPlay server/room options
 - Linux Support
-- ~~MacOS Support~~ Emby Theatre on MacOS doesn't support external players
+- ~~MacOS Support~~ Emby Theatre on MacOS doesn't support external players so this program cannot work there
 - Add resume playback to more clients
 - Look into ways of reporting back playback progress to Emby
